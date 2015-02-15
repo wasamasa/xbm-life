@@ -56,9 +56,9 @@
   "Turn GRID into a XBM image."
   (let* ((size (* xbm-life-grid-size xbm-life-tile-size))
          (xbm (make-vector size nil)))
-    (dolist (row (number-sequence 0 (1- size)))
+    (dotimes (row size)
       (let ((line (make-bool-vector size nil)))
-        (dolist (col (number-sequence 0 (1- size)))
+        (dotimes (col size)
           ;; iterate over the upscaled xbm, do integer division to
           ;; obtain the coordinates to look up the original values in
           (aset line col (= 1 (xbm-life-peek grid (/ row xbm-life-tile-size)
@@ -98,15 +98,15 @@
 (defun xbm-life-create-empty-grid ()
   "Return empty grid."
   (let (grid)
-    (dolist (_ (number-sequence 0 (1- xbm-life-grid-size)))
+    (dotimes (_ xbm-life-grid-size)
       (setq grid (cons (make-vector xbm-life-grid-size 0) grid)))
     (vconcat grid)))
 
 (defun xbm-life-next-generation (grid)
   "Create the next generation based on GRID."
   (let ((new (xbm-life-create-empty-grid)))
-    (dolist (row (number-sequence 0 (1- xbm-life-grid-size)))
-      (dolist (col (number-sequence 0 (1- xbm-life-grid-size)))
+    (dotimes (row xbm-life-grid-size)
+      (dotimes (col xbm-life-grid-size)
         (let ((state (xbm-life-peek grid row col))
               (neighbors (xbm-life-neighbors grid row col)))
           (if (= state 1)
