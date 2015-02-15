@@ -173,6 +173,18 @@ static unsigned char glider_bits[] = {
   (xbm-life-redraw-grid)
   (setq xbm-life-timer (run-with-timer 0 1 'xbm-life-advance-generation)))
 
+;; TODO make variables mode-/buffer-local to allow for multiple demos
+;; going on at the same time
+
+;; TODO stop animation on focus loss (or maybe just neither redraw nor
+;; update when you're not viewing a xbm-life buffer)
+
+;; TODO add more controls, like tile size, grid size, speed, pause
+;; with single step, randomization, restart, etc.
+
+;; TODO add customization options for defaults, like tile size, grid
+;; size, initial layout, etc.
+
 (provide 'xbm-life)
 
 ;;; xbm-life.el ends here
