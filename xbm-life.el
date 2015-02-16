@@ -102,20 +102,23 @@
       (setq grid (cons (make-vector xbm-life-grid-size 0) grid)))
     (vconcat grid)))
 
+
+(defun xbm-life-next-cell-state (grid row col)
+  (let ((state (xbm-life-peek grid row col))
+        (neighbors (xbm-life-neighbors grid row col)))
+    (if (= state 1)
+        (if (or (= neighbors 2) (= neighbors 3))
+            1 0)
+      (if (= neighbors 3)
+          1 0))))
+
 (defun xbm-life-next-generation (grid)
   "Create the next generation based on GRID."
   (let ((new (xbm-life-create-empty-grid)))
     (dotimes (row xbm-life-grid-size)
       (dotimes (col xbm-life-grid-size)
-        (let ((state (xbm-life-peek grid row col))
-              (neighbors (xbm-life-neighbors grid row col)))
-          (if (= state 1)
-              (if (or (= neighbors 2) (= neighbors 3))
-                  (xbm-life-poke new row col 1)
-                (xbm-life-poke new row col 0))
-            (if (= neighbors 3)
-                (xbm-life-poke new row col 1)
-              (xbm-life-poke new row col 0))))))
+        (xbm-life-poke new row col
+                       (xbm-life-next-cell-state grid row col))))
     new))
 
 (defun xbm-life-redraw-grid ()
