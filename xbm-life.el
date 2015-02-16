@@ -27,30 +27,69 @@
 
 ;;; Commentary:
 
-;; A XBM version of Conway's Game of Life
+;; A XBM version of Conway's Game of Life.
 
 ;;; Code:
 
-(defvar xbm-life-grid-size 16)
+(defgroup xbm-life nil
+  "A XBM version of Conway's Game of Life."
+  :group 'games
+  :prefix "xbm-life-")
 
-(defvar xbm-life-tile-size 8)
+(defcustom xbm-life-default-grid-size 16
+  "Default width of the grid in tiles."
+  :type 'integer
+  :group 'xbm-life)
 
-(defvar xbm-life-grid [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-                       [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-                       [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
-                       [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-                       [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
-                       [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
-                       [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
-                       [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
-                       [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-                       [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
-                       [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
-                       [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
-                       [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
-                       [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-                       [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
-                       [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]])
+(defcustom xbm-life-default-tile-size 8
+  "Default width of each tile in the grid."
+  :type 'integer
+  :group 'xbm-life)
+
+(defvar xbm-life-presets
+  '((pulsar . [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
+               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
+               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
+               [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
+               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
+               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
+               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]])
+
+    (glider . [[0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]])))
+
+(defcustom xbm-life-default-grid 'pulsar
+  "Default grid layout.
+Can be a symbol with the name of an existing pattern, when nil a
+randomized grid is used, when t a random pattern is used."
+  :type `(choice (const :tag "Random pattern" t)
+                 (const :tag "Random grid" nil)
+                 (choice ,@(mapcar (lambda (item) (list 'const (car item)))
+                                   xbm-life-presets)))
+  :group 'xbm-life)
 
 (defun xbm-life-render-image (grid)
   "Turn GRID into a XBM image."
@@ -102,6 +141,22 @@
       (setq grid (cons (make-vector xbm-life-grid-size 0) grid)))
     (vconcat grid)))
 
+(defun xbm-life-create-random-grid ()
+  "Return random grid."
+  (let ((grid (xbm-life-create-empty-grid)))
+    (dotimes (row xbm-life-grid-size)
+      (dotimes (col xbm-life-grid-size)
+        (xbm-life-poke grid row col (random 2))))
+    grid))
+
+(defun xbm-life-init-grid ()
+  (cond
+   ((assoc xbm-life-default-grid xbm-life-presets)
+    (cdr (assoc xbm-life-default-grid xbm-life-presets)))
+   ((not xbm-life-default-grid)
+    (xbm-life-create-random-grid))
+   (t (cdr (nth (random (length xbm-life-presets))
+                xbm-life-presets)))))
 
 (defun xbm-life-next-cell-state (grid row col)
   (let ((state (xbm-life-peek grid row col))
@@ -124,22 +179,31 @@
 (defun xbm-life-redraw-grid ()
   "Redraw grid on game buffer."
   (interactive)
-  (with-current-buffer "*xbm life*"
-    (setq buffer-read-only nil)
-    (erase-buffer)
-    (insert-image
-     (create-image (xbm-life-render-image xbm-life-grid) 'xbm t
-                   :width (* xbm-life-grid-size xbm-life-tile-size)
-                   :height (* xbm-life-grid-size xbm-life-tile-size)))
-    (insert "\n")
-    (set-window-point (car (get-buffer-window-list "*xbm life*")) (point-max))
-    (setq buffer-read-only t)))
+  (setq buffer-read-only nil)
+  (erase-buffer)
+  (insert-image
+   (create-image (xbm-life-render-image xbm-life-grid) 'xbm t
+                 :width (* xbm-life-grid-size xbm-life-tile-size)
+                 :height (* xbm-life-grid-size xbm-life-tile-size)))
+  (insert "\n")
+  (setq buffer-read-only t))
+
+(defun xbm-life-windows ()
+  (let ((all-windows (window-list-1))
+        windows)
+    (dolist (window all-windows)
+      (when (eq (buffer-local-value 'major-mode (window-buffer window))
+                'xbm-life-mode)
+        (setq windows (cons window windows))))
+    (nreverse windows)))
 
 (defun xbm-life-advance-generation ()
   "Advance the current generation and redraw the grid."
   (interactive)
-  (setq xbm-life-grid (xbm-life-next-generation xbm-life-grid))
-  (xbm-life-redraw-grid))
+  (dolist (window (xbm-life-windows))
+    (with-selected-window window
+      (setq xbm-life-grid (xbm-life-next-generation xbm-life-grid))
+      (xbm-life-redraw-grid))))
 
 (defvar xbm-life-bitmap
   "#define glider_width 8
@@ -150,43 +214,71 @@ static unsigned char glider_bits[] = {
 
 (defvar xbm-life-icon
   (propertize " " 'display `(image :type xbm :data ,xbm-life-bitmap
-                                    :background ,(face-background 'mode-line))))
+                                   :foreground ,(face-foreground 'mode-line)
+                                   :background ,(face-background 'mode-line))))
 
 (define-derived-mode xbm-life-mode special-mode xbm-life-icon
   "A XBM demonstration."
-  (buffer-disable-undo))
+  (buffer-disable-undo)
+  (set (make-local-variable 'xbm-life-grid-size) xbm-life-default-grid-size)
+  (set (make-local-variable 'xbm-life-tile-size) xbm-life-default-tile-size)
+  (set (make-local-variable 'xbm-life-grid) (xbm-life-init-grid)))
 
-(defvar xbm-life-timer)
+(define-key xbm-life-mode-map (kbd "+") 'xbm-life-speed-up)
+(define-key xbm-life-mode-map (kbd "-") 'xbm-life-slow-down)
 
-(defun xbm-life-quit ()
-  "Cancel animation and quit window."
-  (interactive)
-  (cancel-timer xbm-life-timer)
-  (quit-window))
+(defvar xbm-life-timer nil)
 
-(define-key xbm-life-mode-map (kbd "q") 'xbm-life-quit)
+(defun xbm-life-timer-adjust (delay)
+  (setf (timer--repeat-delay xbm-life-timer) delay))
+
+(defcustom xbm-life-default-delay 1.0
+  "Amount of time passing between updates.
+It's better to not go too low with it, especially if you plan
+using Emacs along to it.  0.1s seem to work well enough for that
+purpose.  If you use the demo only, you can go even lower down to
+values like 0.01s."
+  :type 'float
+  :group 'xbm-life)
+
+(defvar xbm-life-delay xbm-life-default-delay)
+
+(defvar xbm-life-delay-minimum 0.1)
+
+(defvar xbm-life-delay-step 0.1)
+
+(defun xbm-life-slow-down (arg)
+  (interactive "p")
+  (let ((delay (max xbm-life-delay-minimum
+                    (+ xbm-life-delay (* arg xbm-life-delay-step)))))
+    (xbm-life-timer-adjust delay)
+    (setq xbm-life-delay delay)))
+
+(defun xbm-life-speed-up (arg)
+  (interactive "p")
+  (xbm-life-slow-down (- arg)))
 
 ;;;###autoload
-(defun xbm-life ()
-  "Launch a XBM demo of Conway's Game of Life."
-  (interactive)
-  (with-current-buffer (get-buffer-create "*xbm life*")
-    (xbm-life-mode))
-  (display-buffer "*xbm life*")
-  (xbm-life-redraw-grid)
-  (setq xbm-life-timer (run-with-timer 0 1 'xbm-life-advance-generation)))
+(defun xbm-life (arg)
+  "Launch a XBM demo of Conway's Game of Life.
+Use a prefix argument to create a buffer with a different name."
+  (interactive "P")
+  (message "%s" arg)
+  (let ((buffer-name (if (consp arg)
+                         (read-string "Buffer name: " nil nil "*xbm life*")
+                       "*xbm life*")))
+    (with-current-buffer (get-buffer-create buffer-name)
+      (xbm-life-mode)
+      (xbm-life-redraw-grid))
+    (display-buffer buffer-name))
+  (unless xbm-life-timer
+    (setq xbm-life-timer (run-with-timer xbm-life-delay xbm-life-delay
+                                         'xbm-life-advance-generation))))
 
-;; TODO make variables mode-/buffer-local to allow for multiple demos
-;; going on at the same time
+;; TODO add more controls, like tile size, grid size, pause with
+;; single step, randomization, restart, etc.
 
-;; TODO stop animation on focus loss (or maybe just neither redraw nor
-;; update when you're not viewing a xbm-life buffer)
-
-;; TODO add more controls, like tile size, grid size, speed, pause
-;; with single step, randomization, restart, etc.
-
-;; TODO add customization options for defaults, like tile size, grid
-;; size, initial layout, etc.
+;; TODO add an option to make the grid wrap around and a way to toggle it
 
 (provide 'xbm-life)
 
