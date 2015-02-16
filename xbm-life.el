@@ -79,7 +79,10 @@
                [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
                [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
                [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]])))
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]))
+  "Alist of pattern names and patterns.
+The pattern name is a symbol, the pattern is a vector of vectors
+containing ones and zeroes as values.")
 
 (defcustom xbm-life-default-grid 'pulsar
   "Default grid layout.
@@ -150,6 +153,7 @@ randomized grid is used, when t a random pattern is used."
     grid))
 
 (defun xbm-life-init-grid ()
+  "Return a grid according to `xbm-life-default-grid'."
   (cond
    ((assoc xbm-life-default-grid xbm-life-presets)
     (cdr (assoc xbm-life-default-grid xbm-life-presets)))
@@ -159,6 +163,7 @@ randomized grid is used, when t a random pattern is used."
                 xbm-life-presets)))))
 
 (defun xbm-life-next-cell-state (grid row col)
+  "Calculate the next cell state on GRID using ROW and COL."
   (let ((state (xbm-life-peek grid row col))
         (neighbors (xbm-life-neighbors grid row col)))
     (if (= state 1)
@@ -189,6 +194,7 @@ randomized grid is used, when t a random pattern is used."
   (setq buffer-read-only t))
 
 (defun xbm-life-windows ()
+  "Return a list of windows displaying the demo."
   (let ((all-windows (window-list-1))
         windows)
     (dolist (window all-windows)
@@ -210,12 +216,14 @@ randomized grid is used, when t a random pattern is used."
 #define glider_height 16
 static unsigned char glider_bits[] = {
 0x18, 0x18, 0x00, 0xc0, 0xc0, 0x00, 0xdb, 0xdb,
-0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };")
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };"
+  "XBM data for the mode icon.")
 
 (defvar xbm-life-icon
   (propertize " " 'display `(image :type xbm :data ,xbm-life-bitmap
                                    :foreground ,(face-foreground 'mode-line)
-                                   :background ,(face-background 'mode-line))))
+                                   :background ,(face-background 'mode-line)))
+  "XBM mode icon.")
 
 (define-derived-mode xbm-life-mode special-mode xbm-life-icon
   "A XBM demonstration."
@@ -227,9 +235,11 @@ static unsigned char glider_bits[] = {
 (define-key xbm-life-mode-map (kbd "+") 'xbm-life-speed-up)
 (define-key xbm-life-mode-map (kbd "-") 'xbm-life-slow-down)
 
-(defvar xbm-life-timer nil)
+(defvar xbm-life-timer nil
+  "Global timer controlling every running demo.")
 
 (defun xbm-life-timer-adjust (delay)
+  "Set the timer to DELAY."
   (setf (timer--repeat-delay xbm-life-timer) delay))
 
 (defcustom xbm-life-default-delay 1.0
@@ -241,13 +251,17 @@ values like 0.01s."
   :type 'float
   :group 'xbm-life)
 
-(defvar xbm-life-delay xbm-life-default-delay)
+(defvar xbm-life-delay xbm-life-default-delay
+  "Delay of `xbm-life-timer' in seconds.")
 
-(defvar xbm-life-delay-minimum 0.1)
+(defvar xbm-life-delay-minimum 0.1
+  "Minimum delay that can be set interactively.")
 
-(defvar xbm-life-delay-step 0.1)
+(defvar xbm-life-delay-step 0.1
+  "Delay step size for interactive speed commands.")
 
 (defun xbm-life-slow-down (arg)
+  "Slow down demo by ARG."
   (interactive "p")
   (let ((delay (max xbm-life-delay-minimum
                     (+ xbm-life-delay (* arg xbm-life-delay-step)))))
@@ -255,13 +269,15 @@ values like 0.01s."
     (setq xbm-life-delay delay)))
 
 (defun xbm-life-speed-up (arg)
+  "Speed up demo by ARG."
   (interactive "p")
   (xbm-life-slow-down (- arg)))
 
 ;;;###autoload
 (defun xbm-life (arg)
   "Launch a XBM demo of Conway's Game of Life.
-Use a prefix argument to create a buffer with a different name."
+Use ARG as prefix argument to create a buffer with a different
+name."
   (interactive "P")
   (message "%s" arg)
   (let ((buffer-name (if (consp arg)
