@@ -41,10 +41,18 @@
   :type 'integer
   :group 'xbm-life)
 
+(defvar xbm-life-grid-size nil
+  "Current width of the grid in tiles.")
+(make-local-variable 'xbm-life-grid-size)
+
 (defcustom xbm-life-default-tile-size 8
   "Default width of each tile in the grid."
   :type 'integer
   :group 'xbm-life)
+
+(defvar xbm-life-tile-size nil
+  "Current width of each tile in the grid.")
+(make-local-variable 'xbm-life-tile-size)
 
 (defvar xbm-life-presets
   '((pulsar . [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
@@ -93,6 +101,10 @@ randomized grid is used, when t a random pattern is used."
                  (choice ,@(mapcar (lambda (item) (list 'const (car item)))
                                    xbm-life-presets)))
   :group 'xbm-life)
+
+(defvar xbm-life-grid nil
+  "Current grid.")
+(make-local-variable 'xbm-life-grid)
 
 (defun xbm-life-render-image (grid)
   "Turn GRID into a XBM image."
@@ -228,9 +240,9 @@ static unsigned char glider_bits[] = {
 (define-derived-mode xbm-life-mode special-mode xbm-life-icon
   "A XBM demonstration."
   (buffer-disable-undo)
-  (set (make-local-variable 'xbm-life-grid-size) xbm-life-default-grid-size)
-  (set (make-local-variable 'xbm-life-tile-size) xbm-life-default-tile-size)
-  (set (make-local-variable 'xbm-life-grid) (xbm-life-init-grid)))
+  (setq xbm-life-grid-size xbm-life-default-grid-size)
+  (setq xbm-life-tile-size xbm-life-default-tile-size)
+  (setq xbm-life-grid (xbm-life-init-grid)))
 
 (define-key xbm-life-mode-map (kbd "+") 'xbm-life-speed-up)
 (define-key xbm-life-mode-map (kbd "-") 'xbm-life-slow-down)
