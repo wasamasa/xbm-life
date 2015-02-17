@@ -164,18 +164,22 @@ In other words, operations wrap around both sides."
           (setq neighbors (1+ neighbors)))))
     neighbors))
 
-(defun xbm-life-create-empty-grid ()
-  "Return empty grid."
-  (let (grid)
-    (dotimes (_ xbm-life-grid-size)
-      (setq grid (cons (make-vector xbm-life-grid-size 0) grid)))
+(defun xbm-life-create-empty-grid (&optional size)
+  "Return empty grid.
+When supplying SIZE, make it of that size instead
+`xbm-life-size'."
+  (let ((size (or size xbm-life-grid-size))
+        grid)
+    (dotimes (_ size)
+      (setq grid (cons (make-vector size 0) grid)))
     (vconcat grid)))
 
-(defun xbm-life-create-random-grid ()
+(defun xbm-life-create-random-grid (&optional size)
   "Return random grid."
-  (let ((grid (xbm-life-create-empty-grid)))
-    (dotimes (row xbm-life-grid-size)
-      (dotimes (col xbm-life-grid-size)
+  (let ((size (or size xbm-life-grid-size))
+        (grid (xbm-life-create-empty-grid size)))
+    (dotimes (row size)
+      (dotimes (col size)
         (xbm-life-poke grid row col (random 2))))
     grid))
 
@@ -279,11 +283,15 @@ values like 0.01s."
 (defvar xbm-life-delay xbm-life-default-delay
   "Delay of `xbm-life-timer' in seconds.")
 
-(defvar xbm-life-delay-minimum 0.1
-  "Minimum delay that can be set interactively.")
+(defcustom xbm-life-delay-minimum 0.1
+  "Minimum delay that can be set interactively."
+  :type 'float
+  :group 'xbm-life)
 
-(defvar xbm-life-delay-step 0.1
-  "Delay step size for interactive speed commands.")
+(defcustom xbm-life-delay-step 0.1
+  "Delay step size for interactive speed commands."
+  :type 'float
+  :group 'xbm-life)
 
 (defun xbm-life-slow-down (arg)
   "Slow down demo by ARG."
@@ -298,12 +306,72 @@ values like 0.01s."
   (interactive "p")
   (xbm-life-slow-down (- arg)))
 
+(defcustom xbm-life-tile-minimum 1
+  "Minimum tile size that can be set interactively."
+  :type 'integer
+  :group 'xbm-life)
+
+(defcustom xbm-life-tile-step 1
+  "Tile step size for interactive tile size commands."
+  :type 'integer
+  :group 'xbm-life)
+
+(defun xbm-life-smaller-tiles (arg)
+  "Make tile size smaller by ARG."
+  (interactive "p")
+  (let ((size (max xbm-life-tile-minimum
+                   (+ xbm-life-tile-size (* arg xbm-life-tile-step)))))
+    (setq xbm-life-tile-size size)))
+
+(defun xbm-life-larger-tiles (arg)
+  "Make tile size larger by ARG."
+  (interactive "p")
+  (xbm-life-smaller-tiles (- arg)))
+
+(defun xbm-life-copy-grid (grid size)
+  "Copy GRID into a new grid dimensioned SIZE."
+  (let ((new (xbm-life-create-empty-grid size))
+        (size (min size (length grid))))
+    (dotimes (row size)
+      (dotimes (col size)
+        (xbm-life-poke new row col
+                       (xbm-life-peek grid row col))))
+    new))
+
+(defcustom xbm-life-grid-minimum 2
+  "Minimum grid size that can be set interactively."
+  :type 'integer
+  :group 'xbm-life)
+
+(defcustom xbm-life-grid-step 1
+  "Grid step size for interactive grid size commands."
+  :type 'integer
+  :group 'xbm-life)
+
+(defun xbm-life-smaller-grid (arg)
+  "Make grid size smaller by ARG."
+  (interactive "p")
+  (let ((size (max xbm-life-grid-minimum
+                   (+ xbm-life-grid-size (* arg xbm-life-grid-step)))))
+    (setq xbm-life-grid (xbm-life-copy-grid xbm-life-grid size))
+    (setq xbm-life-grid-size size)))
+
+(defun xbm-life-larger-grid (arg)
+  "Make grid larger by ARG."
+  (interactive "p")
+  (xbm-life-smaller-grid (- arg)))
+
 (defun xbm-life-toggle-toroidal-grid ()
   "Toggle toroidal grid state."
+  (interactive)
   (setq xbm-life-toroidal-grid (not xbm-life-toroidal-grid)))
 
 (define-key xbm-life-mode-map (kbd "+") 'xbm-life-speed-up)
 (define-key xbm-life-mode-map (kbd "-") 'xbm-life-slow-down)
+(define-key xbm-life-mode-map (kbd "M-+") 'xbm-life-smaller-tiles)
+(define-key xbm-life-mode-map (kbd "M--") 'xbm-life-larger-tiles)
+(define-key xbm-life-mode-map (kbd "C-+") 'xbm-life-smaller-grid)
+(define-key xbm-life-mode-map (kbd "C--") 'xbm-life-larger-grid)
 (define-key xbm-life-mode-map (kbd "t") 'xbm-life-toggle-toroidal-grid)
 
 ;;;###autoload
@@ -324,8 +392,10 @@ name."
     (setq xbm-life-timer (run-with-timer xbm-life-delay xbm-life-delay
                                          'xbm-life-advance-generation))))
 
-;; TODO add more controls, like tile size, grid size, pause with
-;; single step, randomization, restart, etc.
+;; TODO add more controls, like pause with single step, randomization,
+;; restart, etc.
+
+;; TODO write a mouse handler for poking the grid
 
 (provide 'xbm-life)
 
