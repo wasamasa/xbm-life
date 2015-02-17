@@ -397,6 +397,13 @@ name."
 
 ;; TODO write a mouse handler for poking the grid
 
+;; NOTE this can be probably done by figuring out the pixel coordinate
+;; of the first glyph in the line the image was inserted in, then
+;; adding the image width and height to compare the click coordinates
+;; with for figuring out what cell was clicked
+
+;; TODO offer inverting colors, make colors customizable
+
 (provide 'xbm-life)
 
 ;;; xbm-life.el ends here
