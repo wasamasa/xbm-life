@@ -4,7 +4,7 @@
 
 ;; Author: Vasilij Schneidermann <v.schneidermann@gmail.com>
 ;; URL: https://github.com/wasamasa/xbm-life
-;; Version: 0.0.2
+;; Version: 0.0.3
 ;; Package-Requires:
 ;; Keywords: games
 
