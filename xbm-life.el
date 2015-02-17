@@ -106,6 +106,16 @@ randomized grid is used, when t a random pattern is used."
   "Current grid.")
 (make-local-variable 'xbm-life-grid)
 
+(defcustom xbm-life-default-toroidal-grid nil
+  "When non-nil, the grid is toroidal.
+In other words, operations wrap around both sides."
+  :type 'boolean
+  :group 'xbm-life)
+
+(defvar xbm-life-toroidal-grid nil
+  "Current toroidal grid state.")
+(make-local-variable 'xbm-life-toroidal-grid)
+
 (defun xbm-life-render-image (grid)
   "Turn GRID into a XBM image."
   (let* ((size (* xbm-life-grid-size xbm-life-tile-size))
@@ -142,9 +152,14 @@ randomized grid is used, when t a random pattern is used."
     (dolist (xy offsets)
       (let* ((x (car xy))
              (y (cdr xy))
-             (row+x (+ row x))
-             (col+y (+ col y)))
-        (when (and (not (xbm-life-out-of-bounds row+x col+y))
+             (row+x (if xbm-life-toroidal-grid
+                        (mod (+ row x) xbm-life-grid-size)
+                      (+ row x)))
+             (col+y (if xbm-life-toroidal-grid
+                        (mod (+ col y) xbm-life-grid-size)
+                      (+ col y))))
+        (when (and (or xbm-life-toroidal-grid
+                       (not (xbm-life-out-of-bounds row+x col+y)))
                    (= (xbm-life-peek grid row+x col+y) 1))
           (setq neighbors (1+ neighbors)))))
     neighbors))
@@ -242,10 +257,8 @@ static unsigned char glider_bits[] = {
   (buffer-disable-undo)
   (setq xbm-life-grid-size xbm-life-default-grid-size)
   (setq xbm-life-tile-size xbm-life-default-tile-size)
+  (setq xbm-life-toroidal-grid xbm-life-default-toroidal-grid)
   (setq xbm-life-grid (xbm-life-init-grid)))
-
-(define-key xbm-life-mode-map (kbd "+") 'xbm-life-speed-up)
-(define-key xbm-life-mode-map (kbd "-") 'xbm-life-slow-down)
 
 (defvar xbm-life-timer nil
   "Global timer controlling every running demo.")
@@ -285,6 +298,14 @@ values like 0.01s."
   (interactive "p")
   (xbm-life-slow-down (- arg)))
 
+(defun xbm-life-toggle-toroidal-grid ()
+  "Toggle toroidal grid state."
+  (setq xbm-life-toroidal-grid (not xbm-life-toroidal-grid)))
+
+(define-key xbm-life-mode-map (kbd "+") 'xbm-life-speed-up)
+(define-key xbm-life-mode-map (kbd "-") 'xbm-life-slow-down)
+(define-key xbm-life-mode-map (kbd "t") 'xbm-life-toggle-toroidal-grid)
+
 ;;;###autoload
 (defun xbm-life (arg)
   "Launch a XBM demo of Conway's Game of Life.
@@ -305,8 +326,6 @@ name."
 
 ;; TODO add more controls, like tile size, grid size, pause with
 ;; single step, randomization, restart, etc.
-
-;; TODO add an option to make the grid wrap around and a way to toggle it
 
 (provide 'xbm-life)
 
