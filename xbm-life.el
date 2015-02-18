@@ -54,7 +54,7 @@
   "Current width of each tile in the grid.")
 (make-variable-buffer-local 'xbm-life-tile-size)
 
-(defvar xbm-life-presets
+(defvar xbm-life-patterns
   '((pulsar . [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
                [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
                [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
@@ -99,7 +99,7 @@ randomized grid is used, when t a random pattern is used."
   :type `(choice (const :tag "Random pattern" t)
                  (const :tag "Random grid" nil)
                  (choice ,@(mapcar (lambda (item) (list 'const (car item)))
-                                   xbm-life-presets)))
+                                   xbm-life-patterns)))
   :group 'xbm-life)
 
 (defvar xbm-life-grid nil
@@ -175,7 +175,9 @@ When supplying SIZE, make it of that size instead
     (vconcat grid)))
 
 (defun xbm-life-create-random-grid (&optional size)
-  "Return random grid."
+  "Return random grid.
+When supplying SIZE, make it of that size instead
+`xbm-life-size'."
   (let ((size (or size xbm-life-grid-size))
         (grid (xbm-life-create-empty-grid size)))
     (dotimes (row size)
@@ -183,15 +185,28 @@ When supplying SIZE, make it of that size instead
         (xbm-life-poke grid row col (random 2))))
     grid))
 
+(defun xbm-life-randomize-grid ()
+  "Randomize current grid."
+  (interactive)
+  (setq xbm-life-grid (xbm-life-create-random-grid))
+  (xbm-life-redraw-grid))
+
 (defun xbm-life-init-grid ()
   "Return a grid according to `xbm-life-default-grid'."
   (cond
-   ((assoc xbm-life-default-grid xbm-life-presets)
-    (cdr (assoc xbm-life-default-grid xbm-life-presets)))
+   ((assoc xbm-life-default-grid xbm-life-patterns)
+    (cdr (assoc xbm-life-default-grid xbm-life-patterns)))
    ((not xbm-life-default-grid)
     (xbm-life-create-random-grid))
-   (t (cdr (nth (random (length xbm-life-presets))
-                xbm-life-presets)))))
+   (t (cdr (nth (random (length xbm-life-patterns))
+                xbm-life-patterns)))))
+
+(defun xbm-life-load-pattern (pattern)
+  "Load PATTERN into the current grid."
+  (interactive (list (intern (completing-read "Pattern: " xbm-life-patterns
+                                              nil t))))
+  (setq xbm-life-grid (cdr (assoc pattern xbm-life-patterns)))
+  (xbm-life-redraw-grid))
 
 (defun xbm-life-next-cell-state (grid row col)
   "Calculate the next cell state on GRID using ROW and COL."
@@ -258,11 +273,7 @@ static unsigned char glider_bits[] = {
 
 (define-derived-mode xbm-life-mode special-mode xbm-life-icon
   "A XBM demonstration."
-  (buffer-disable-undo)
-  (setq xbm-life-grid-size xbm-life-default-grid-size)
-  (setq xbm-life-tile-size xbm-life-default-tile-size)
-  (setq xbm-life-toroidal-grid xbm-life-default-toroidal-grid)
-  (setq xbm-life-grid (xbm-life-init-grid)))
+  (xbm-life-reset))
 
 (defvar xbm-life-timer nil
   "Global timer controlling every running demo.")
@@ -282,6 +293,49 @@ values like 0.01s."
 
 (defvar xbm-life-delay xbm-life-default-delay
   "Delay of `xbm-life-timer' in seconds.")
+
+(defun xbm-life-reset ()
+  "Initialize demo."
+  (interactive)
+  (buffer-disable-undo)
+  (setq xbm-life-grid-size xbm-life-default-grid-size)
+  (setq xbm-life-tile-size xbm-life-default-tile-size)
+  (setq xbm-life-toroidal-grid xbm-life-default-toroidal-grid)
+  (setq xbm-life-grid (xbm-life-init-grid))
+  (setq xbm-life-delay xbm-life-default-delay)
+  (when xbm-life-timer
+    (xbm-life-timer-adjust xbm-life-delay)))
+
+(defvar xbm-life-playing nil
+  "Non-nil when the demo is running.")
+
+(defun xbm-life-play ()
+  "Run demo."
+  (interactive)
+  (unless xbm-life-playing
+    (setq xbm-life-timer (run-with-timer xbm-life-delay xbm-life-delay
+                                         'xbm-life-advance-generation))
+    (setq xbm-life-playing t)))
+
+(defun xbm-life-pause ()
+  "Pause demo."
+  (interactive)
+  (when xbm-life-playing
+    (cancel-timer xbm-life-timer)
+    (setq xbm-life-playing nil)))
+
+(defun xbm-life-play-or-pause ()
+  "Run or pause demo."
+  (interactive)
+  (if xbm-life-playing
+      (xbm-life-pause)
+    (xbm-life-play)))
+
+(defun xbm-life-single-step ()
+  "Advance a single generation when not playing."
+  (interactive)
+  (unless xbm-life-playing
+    (xbm-life-advance-generation)))
 
 (defcustom xbm-life-delay-minimum 0.1
   "Minimum delay that can be set interactively."
@@ -366,6 +420,12 @@ values like 0.01s."
   (interactive)
   (setq xbm-life-toroidal-grid (not xbm-life-toroidal-grid)))
 
+(define-key xbm-life-mode-map (kbd "l") 'xbm-life-load-pattern)
+(define-key xbm-life-mode-map (kbd "r") 'xbm-life-reset)
+(define-key xbm-life-mode-map (kbd "R") 'xbm-life-randomize-grid)
+(define-key xbm-life-mode-map (kbd "p") 'xbm-life-play-or-pause)
+(define-key xbm-life-mode-map (kbd "SPC") 'xbm-life-play-or-pause)
+(define-key xbm-life-mode-map (kbd ".") 'xbm-life-single-step)
 (define-key xbm-life-mode-map (kbd "+") 'xbm-life-speed-up)
 (define-key xbm-life-mode-map (kbd "-") 'xbm-life-slow-down)
 (define-key xbm-life-mode-map (kbd "M-+") 'xbm-life-smaller-tiles)
@@ -388,12 +448,7 @@ name."
       (xbm-life-mode)
       (xbm-life-redraw-grid))
     (display-buffer buffer-name))
-  (unless xbm-life-timer
-    (setq xbm-life-timer (run-with-timer xbm-life-delay xbm-life-delay
-                                         'xbm-life-advance-generation))))
-
-;; TODO add more controls, like pause with single step, randomization,
-;; restart, etc.
+  (xbm-life-play))
 
 ;; TODO write a mouse handler for poking the grid
 
