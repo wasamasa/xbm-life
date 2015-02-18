@@ -73,39 +73,80 @@
 (make-variable-buffer-local 'xbm-life-tile-size)
 
 (defvar xbm-life-patterns
-  '((pulsar . [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
-               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
-               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
-               [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
-               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
-               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
-               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]])
+  '((pulsar . [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0 0]
+               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0 0]
+               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0 0]
+               [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0 0]
+               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0 0]
+               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0 0]
+               [0 0 1 0 0 0 0 1 0 1 0 0 0 0 1 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]])
 
-    (glider . [[0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
-               [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]]))
+    (figure-eight . [[0 0 0 0 0 0 0 0 0 0 0 0]
+                     [0 0 0 0 0 0 0 0 0 0 0 0]
+                     [0 0 0 0 0 0 0 0 0 0 0 0]
+                     [0 0 0 1 1 1 0 0 0 0 0 0]
+                     [0 0 0 1 1 1 0 0 0 0 0 0]
+                     [0 0 0 1 1 1 0 0 0 0 0 0]
+                     [0 0 0 0 0 0 1 1 1 0 0 0]
+                     [0 0 0 0 0 0 1 1 1 0 0 0]
+                     [0 0 0 0 0 0 1 1 1 0 0 0]
+                     [0 0 0 0 0 0 0 0 0 0 0 0]
+                     [0 0 0 0 0 0 0 0 0 0 0 0]
+                     [0 0 0 0 0 0 0 0 0 0 0 0]])
+
+    (lightweight-spaceship . [[0 0 0 0 0 0 0 0 0 0]
+                              [0 0 0 0 0 0 0 0 0 0]
+                              [0 0 0 0 0 0 0 0 0 0]
+                              [1 0 0 1 0 0 0 0 0 0]
+                              [0 0 0 0 1 0 0 0 0 0]
+                              [1 0 0 0 1 0 0 0 0 0]
+                              [0 1 1 1 1 0 0 0 0 0]
+                              [0 0 0 0 0 0 0 0 0 0]
+                              [0 0 0 0 0 0 0 0 0 0]
+                              [0 0 0 0 0 0 0 0 0 0]])
+
+    (die-hard . [[0 0 0 0 0 0 0 0 0 0]
+                 [0 0 0 0 0 0 0 0 0 0]
+                 [0 0 0 0 0 0 0 0 0 0]
+                 [0 0 0 0 0 0 0 0 0 0]
+                 [0 0 0 0 0 0 0 1 0 0]
+                 [0 1 1 0 0 0 0 0 0 0]
+                 [0 0 1 0 0 0 1 1 1 0]
+                 [0 0 0 0 0 0 0 0 0 0]
+                 [0 0 0 0 0 0 0 0 0 0]
+                 [0 0 0 0 0 0 0 0 0 0]])
+
+    (glider . [[0 1 0 0 0 0 0 0]
+               [0 0 1 0 0 0 0 0]
+               [1 1 1 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0]
+               [0 0 0 0 0 0 0 0]])
+
+    (clock . [[0 0 0 0 0 0]
+              [0 0 0 1 0 0]
+              [0 1 0 1 0 0]
+              [0 0 1 0 1 0]
+              [0 0 1 0 0 0]
+              [0 0 0 0 0 0]])
+
+    (blinker . [[0 0 0 0 0]
+                [0 0 0 0 0]
+                [0 1 1 1 0]
+                [0 0 0 0 0]
+                [0 0 0 0 0]]))
   "Alist of pattern names and patterns.
 The pattern name is a symbol, the pattern is a vector of vectors
 containing ones and zeroes as values.")
@@ -209,6 +250,10 @@ When supplying SIZE, make it of that size instead
   (setq xbm-life-grid (xbm-life-create-random-grid))
   (xbm-life-redraw-grid))
 
+(defun xbm-life-random-pattern ()
+  "Return a random item from `xbm-life-patterns'."
+  (nth (random (length xbm-life-patterns)) xbm-life-patterns))
+
 (defun xbm-life-init-grid ()
   "Return a grid according to `xbm-life-default-grid'."
   (cond
@@ -216,8 +261,7 @@ When supplying SIZE, make it of that size instead
     (cdr (assoc xbm-life-default-grid xbm-life-patterns)))
    ((not xbm-life-default-grid)
     (xbm-life-create-random-grid))
-   (t (cdr (nth (random (length xbm-life-patterns))
-                xbm-life-patterns)))))
+   (t (cdr (xbm-life-random-pattern)))))
 
 (defun xbm-life-load-pattern (pattern)
   "Load PATTERN into the current grid."
@@ -228,6 +272,11 @@ When supplying SIZE, make it of that size instead
     (setq xbm-life-grid (cdr (assoc pattern xbm-life-patterns)))
     (setq xbm-life-grid-size size))
   (xbm-life-redraw-grid))
+
+(defun xbm-life-load-random-pattern ()
+  "Load random pattern into the current grid."
+  (interactive)
+  (xbm-life-load-pattern (car (xbm-life-random-pattern))))
 
 (defun xbm-life-next-cell-state (grid row col)
   "Calculate the next cell state on GRID using ROW and COL."
@@ -323,10 +372,10 @@ values like 0.01s."
   (buffer-disable-undo)
   (setq xbm-life-foreground xbm-life-default-foreground)
   (setq xbm-life-background xbm-life-default-background)
-  (setq xbm-life-grid-size xbm-life-default-grid-size)
+  (setq xbm-life-grid (xbm-life-init-grid))
+  (setq xbm-life-grid-size (length xbm-life-grid))
   (setq xbm-life-tile-size xbm-life-default-tile-size)
   (setq xbm-life-toroidal-grid xbm-life-default-toroidal-grid)
-  (setq xbm-life-grid (xbm-life-init-grid))
   (setq xbm-life-delay xbm-life-default-delay)
   (when xbm-life-timer
     (xbm-life-timer-adjust xbm-life-delay)))
@@ -457,6 +506,7 @@ values like 0.01s."
     (xbm-life-redraw-grid)))
 
 (define-key xbm-life-mode-map (kbd "l") 'xbm-life-load-pattern)
+(define-key xbm-life-mode-map (kbd "L") 'xbm-life-load-random-pattern)
 (define-key xbm-life-mode-map (kbd "r") 'xbm-life-reset)
 (define-key xbm-life-mode-map (kbd "R") 'xbm-life-randomize-grid)
 (define-key xbm-life-mode-map (kbd "p") 'xbm-life-play-or-pause)
