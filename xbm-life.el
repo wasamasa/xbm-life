@@ -223,7 +223,10 @@ When supplying SIZE, make it of that size instead
   "Load PATTERN into the current grid."
   (interactive (list (intern (completing-read "Pattern: " xbm-life-patterns
                                               nil t))))
-  (setq xbm-life-grid (cdr (assoc pattern xbm-life-patterns)))
+  (let* ((grid (cdr (assoc pattern xbm-life-patterns)))
+         (size (length grid)))
+    (setq xbm-life-grid (cdr (assoc pattern xbm-life-patterns)))
+    (setq xbm-life-grid-size size))
   (xbm-life-redraw-grid))
 
 (defun xbm-life-next-cell-state (grid row col)
