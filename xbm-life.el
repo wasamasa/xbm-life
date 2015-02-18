@@ -494,6 +494,8 @@ name."
 ;; adding the image width and height to compare the click coordinates
 ;; with for figuring out what cell was clicked
 
+;; TODO add modeline indicators for parameters
+
 (provide 'xbm-life)
 
 ;;; xbm-life.el ends here
