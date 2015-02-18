@@ -43,7 +43,7 @@
 
 (defvar xbm-life-grid-size nil
   "Current width of the grid in tiles.")
-(make-local-variable 'xbm-life-grid-size)
+(make-variable-buffer-local 'xbm-life-grid-size)
 
 (defcustom xbm-life-default-tile-size 8
   "Default width of each tile in the grid."
@@ -52,7 +52,7 @@
 
 (defvar xbm-life-tile-size nil
   "Current width of each tile in the grid.")
-(make-local-variable 'xbm-life-tile-size)
+(make-variable-buffer-local 'xbm-life-tile-size)
 
 (defvar xbm-life-presets
   '((pulsar . [[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
@@ -104,7 +104,7 @@ randomized grid is used, when t a random pattern is used."
 
 (defvar xbm-life-grid nil
   "Current grid.")
-(make-local-variable 'xbm-life-grid)
+(make-variable-buffer-local 'xbm-life-grid)
 
 (defcustom xbm-life-default-toroidal-grid nil
   "When non-nil, the grid is toroidal.
@@ -114,7 +114,7 @@ In other words, operations wrap around both sides."
 
 (defvar xbm-life-toroidal-grid nil
   "Current toroidal grid state.")
-(make-local-variable 'xbm-life-toroidal-grid)
+(make-variable-buffer-local 'xbm-life-toroidal-grid)
 
 (defun xbm-life-render-image (grid)
   "Turn GRID into a XBM image."
