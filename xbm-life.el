@@ -36,6 +36,24 @@
   :group 'games
   :prefix "xbm-life-")
 
+(defcustom xbm-life-default-foreground (face-foreground 'default)
+  "Default foreground color of the grid."
+  :type 'string
+  :group 'xbm-life)
+
+(defvar xbm-life-foreground nil
+  "Current foreground color of the grid.")
+(make-variable-buffer-local 'xbm-life-foreground)
+
+(defcustom xbm-life-default-background (face-background 'default)
+  "Default background color of the grid."
+  :type 'string
+  :group 'xbm-life)
+
+(defvar xbm-life-background nil
+  "Current background color of the grid.")
+(make-variable-buffer-local 'xbm-life-background)
+
 (defcustom xbm-life-default-grid-size 16
   "Default width of the grid in tiles."
   :type 'integer
@@ -235,7 +253,9 @@ When supplying SIZE, make it of that size instead
   (insert-image
    (create-image (xbm-life-render-image xbm-life-grid) 'xbm t
                  :width (* xbm-life-grid-size xbm-life-tile-size)
-                 :height (* xbm-life-grid-size xbm-life-tile-size)))
+                 :height (* xbm-life-grid-size xbm-life-tile-size)
+                 :foreground xbm-life-foreground
+                 :background xbm-life-background))
   (insert "\n")
   (setq buffer-read-only t))
 
@@ -298,6 +318,8 @@ values like 0.01s."
   "Initialize demo."
   (interactive)
   (buffer-disable-undo)
+  (setq xbm-life-foreground xbm-life-default-foreground)
+  (setq xbm-life-background xbm-life-default-background)
   (setq xbm-life-grid-size xbm-life-default-grid-size)
   (setq xbm-life-tile-size xbm-life-default-tile-size)
   (setq xbm-life-toroidal-grid xbm-life-default-toroidal-grid)
@@ -375,7 +397,8 @@ values like 0.01s."
   (interactive "p")
   (let ((size (max xbm-life-tile-minimum
                    (+ xbm-life-tile-size (* arg xbm-life-tile-step)))))
-    (setq xbm-life-tile-size size)))
+    (setq xbm-life-tile-size size)
+    (xbm-life-redraw-grid)))
 
 (defun xbm-life-larger-tiles (arg)
   "Make tile size larger by ARG."
@@ -408,7 +431,8 @@ values like 0.01s."
   (let ((size (max xbm-life-grid-minimum
                    (+ xbm-life-grid-size (* arg xbm-life-grid-step)))))
     (setq xbm-life-grid (xbm-life-copy-grid xbm-life-grid size))
-    (setq xbm-life-grid-size size)))
+    (setq xbm-life-grid-size size)
+    (xbm-life-redraw-grid)))
 
 (defun xbm-life-larger-grid (arg)
   "Make grid larger by ARG."
@@ -419,6 +443,15 @@ values like 0.01s."
   "Toggle toroidal grid state."
   (interactive)
   (setq xbm-life-toroidal-grid (not xbm-life-toroidal-grid)))
+
+(defun xbm-life-invert-colors ()
+  "Invert currently used fore- and background color."
+  (interactive)
+  (let ((foreground xbm-life-background)
+        (background xbm-life-foreground))
+    (setq xbm-life-foreground foreground)
+    (setq xbm-life-background background)
+    (xbm-life-redraw-grid)))
 
 (define-key xbm-life-mode-map (kbd "l") 'xbm-life-load-pattern)
 (define-key xbm-life-mode-map (kbd "r") 'xbm-life-reset)
@@ -433,6 +466,7 @@ values like 0.01s."
 (define-key xbm-life-mode-map (kbd "C-+") 'xbm-life-smaller-grid)
 (define-key xbm-life-mode-map (kbd "C--") 'xbm-life-larger-grid)
 (define-key xbm-life-mode-map (kbd "t") 'xbm-life-toggle-toroidal-grid)
+(define-key xbm-life-mode-map (kbd "i") 'xbm-life-invert-colors)
 
 ;;;###autoload
 (defun xbm-life (arg)
@@ -456,8 +490,6 @@ name."
 ;; of the first glyph in the line the image was inserted in, then
 ;; adding the image width and height to compare the click coordinates
 ;; with for figuring out what cell was clicked
-
-;; TODO offer inverting colors, make colors customizable
 
 (provide 'xbm-life)
 
