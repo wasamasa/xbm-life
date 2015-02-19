@@ -385,7 +385,6 @@ values like 0.01s."
 
 (defun xbm-life-play ()
   "Run demo."
-  (interactive)
   (unless xbm-life-playing
     (setq xbm-life-timer (run-with-timer xbm-life-delay xbm-life-delay
                                          'xbm-life-advance-generation))
@@ -393,7 +392,6 @@ values like 0.01s."
 
 (defun xbm-life-pause ()
   "Pause demo."
-  (interactive)
   (when xbm-life-playing
     (cancel-timer xbm-life-timer)
     (setq xbm-life-playing nil)))
