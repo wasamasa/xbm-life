@@ -387,7 +387,9 @@ values like 0.01s."
   (setq xbm-life-toroidal-grid xbm-life-default-toroidal-grid)
   (setq xbm-life-delay xbm-life-default-delay)
   (when xbm-life-timer
-    (xbm-life-timer-adjust xbm-life-delay)))
+    (xbm-life-timer-adjust xbm-life-delay)
+    (xbm-life-pause))
+  (xbm-life-redraw-grid))
 
 (defvar xbm-life-playing nil
   "Non-nil when the demo is running.")
@@ -615,7 +617,8 @@ name."
         (xbm-life-stats-mode)
         (xbm-life-stats-update))
       (setq xbm-life-grid (xbm-life-init-grid))
-      (xbm-life-redraw-grid))
+      (xbm-life-redraw-grid)
+      (xbm-life-play))
     (display-buffer buffer-name))
   (xbm-life-play))
 
