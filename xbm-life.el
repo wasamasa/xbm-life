@@ -537,8 +537,6 @@ If yes, toggle the clicked cell."
          (col (/ x xbm-life-tile-size))
          (size (* xbm-life-grid-size xbm-life-tile-size)))
     (when (and (<= x size) (<= y size))
-      (message "Event captured at %d|%d" x y)
-      (message "Coordinates: %d:%d" row col)
       (xbm-life-toggle-cell row col))))
 
 (define-key xbm-life-mode-map (kbd "l") 'xbm-life-load-pattern)
