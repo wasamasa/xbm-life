@@ -517,6 +517,30 @@ values like 0.01s."
     (setq xbm-life-background background)
     (xbm-life-redraw-grid)))
 
+(defun xbm-life-toggle-cell (row col)
+  "Toggle cell at ROW and COL.
+A dead cell turns alive and vice versa."
+  (let ((grid xbm-life-grid))
+    (xbm-life-poke grid row col
+                   (abs (- (xbm-life-peek grid row col) 1)))
+    (setq xbm-life-grid grid)
+    (xbm-life-redraw-grid)))
+
+(defun xbm-life-mouse-handler (event)
+  "Check whether EVENT happens on the grid.
+If yes, toggle the clicked cell."
+  (interactive "e")
+  (let* ((x-y (posn-x-y (event-start event)))
+         (x (car x-y))
+         (y (cdr x-y))
+         (row (/ y xbm-life-tile-size))
+         (col (/ x xbm-life-tile-size))
+         (size (* xbm-life-grid-size xbm-life-tile-size)))
+    (when (and (<= x size) (<= y size))
+      (message "Event captured at %d|%d" x y)
+      (message "Coordinates: %d:%d" row col)
+      (xbm-life-toggle-cell row col))))
+
 (define-key xbm-life-mode-map (kbd "l") 'xbm-life-load-pattern)
 (define-key xbm-life-mode-map (kbd "L") 'xbm-life-load-random-pattern)
 (define-key xbm-life-mode-map (kbd "r") 'xbm-life-reset)
@@ -532,6 +556,7 @@ values like 0.01s."
 (define-key xbm-life-mode-map (kbd "C--") 'xbm-life-larger-grid)
 (define-key xbm-life-mode-map (kbd "t") 'xbm-life-toggle-toroidal-grid)
 (define-key xbm-life-mode-map (kbd "i") 'xbm-life-invert-colors)
+(define-key xbm-life-mode-map (kbd "<mouse-1>") 'xbm-life-mouse-handler)
 
 (defcustom xbm-life-display-stats t
   "When non-nil, display demo stats when starting a demo."
@@ -594,13 +619,6 @@ name."
       (xbm-life-redraw-grid))
     (display-buffer buffer-name))
   (xbm-life-play))
-
-;; TODO write a mouse handler for poking the grid
-
-;; NOTE this can be probably done by figuring out the pixel coordinate
-;; of the first glyph in the line the image was inserted in, then
-;; adding the image width and height to compare the click coordinates
-;; with for figuring out what cell was clicked
 
 (provide 'xbm-life)
 
