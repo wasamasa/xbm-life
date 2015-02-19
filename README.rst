@@ -23,6 +23,24 @@ Usage
 
 Run ``M-x xbm-life`` for the demo.
 
+========================= ================================
+Key bind                  Function
+========================= ================================
+``l``                     Load pattern
+``L``                     Load random pattern
+``r``                     Reset
+``R``                     Randomize
+``p``, ``SPC``            Toggle play/pause
+``.``                     Advance by a single generation
+``+``, ``-``              Speed up/down
+``M-+``, ``M--``          Make tiles larger/smaller
+``C-+``, ``C--``          Make grid larger/smaller
+``t``                     Toggle wraparound
+``i``                     Invert colors
+``<mouse-1>``             Toggle cell
+``q``                     Bury buffer
+========================= ================================
+
 Contributing
 ------------
 
