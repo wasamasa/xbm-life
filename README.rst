@@ -13,8 +13,9 @@ support for XBM images.  Requires a graphical Emacs instance to run.
 Installation
 ------------
 
-Install via `quelpa <https://github.com/quelpa/quelpa>`_ with ``M-:
-(quelpa '(xbm-life :fetcher github :repo "wasamasa/xbm-life"))``.
+Install from `Marmalade <https://marmalade-repo.org/>`_ via ``M-x
+package-install RET xbm-life RET``.
+
 Alternatively download the ``xbm-life.el`` file, open it in Emacs and
 execute ``M-x eval-buffer``.
 
