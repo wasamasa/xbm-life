@@ -381,7 +381,7 @@ values like 0.01s."
   (buffer-disable-undo)
   (setq xbm-life-foreground xbm-life-default-foreground)
   (setq xbm-life-background xbm-life-default-background)
-  (setq xbm-life-grid (xbm-life-init-grid))
+  (setq xbm-life-grid (xbm-life-create-empty-grid xbm-life-default-grid-size))
   (setq xbm-life-grid-size (length xbm-life-grid))
   (setq xbm-life-tile-size xbm-life-default-tile-size)
   (setq xbm-life-toroidal-grid xbm-life-default-toroidal-grid)
@@ -614,6 +614,7 @@ name."
       (when xbm-life-display-stats
         (xbm-life-stats-mode)
         (xbm-life-stats-update))
+      (setq xbm-life-grid (xbm-life-init-grid))
       (xbm-life-redraw-grid))
     (display-buffer buffer-name))
   (xbm-life-play))
