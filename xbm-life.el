@@ -321,13 +321,20 @@ When supplying SIZE, make it of that size instead
         (setq windows (cons window windows))))
     (nreverse windows)))
 
+(defun xbm-life-call-on-windows (thunk)
+  "Call THUNK on every window with a `xbm-life' buffer."
+  (dolist (window (xbm-life-windows))
+    (with-selected-window window
+      (funcall thunk))))
+
 (defun xbm-life-advance-generation ()
   "Advance the current generation and redraw the grid."
   (interactive)
-  (dolist (window (xbm-life-windows))
-    (with-selected-window window
+  (xbm-life-call-on-windows
+   (lambda ()
       (setq xbm-life-grid (xbm-life-next-generation xbm-life-grid))
-      (xbm-life-redraw-grid))))
+      (xbm-life-redraw-grid)
+      (xbm-life-stats-update))))
 
 (defvar xbm-life-bitmap
   "#define glider_width 8
