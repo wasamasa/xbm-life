@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'format-spec)
+
 (defgroup xbm-life nil
   "A XBM version of Conway's Game of Life."
   :group 'games
@@ -408,7 +410,8 @@ values like 0.01s."
   (interactive)
   (if xbm-life-playing
       (xbm-life-pause)
-    (xbm-life-play)))
+    (xbm-life-play))
+  (xbm-life-call-on-windows 'xbm-life-stats-update))
 
 (defun xbm-life-single-step ()
   "Advance a single generation when not playing."
@@ -432,7 +435,8 @@ values like 0.01s."
   (let ((delay (max xbm-life-delay-minimum
                     (+ xbm-life-delay (* arg xbm-life-delay-step)))))
     (xbm-life-timer-adjust delay)
-    (setq xbm-life-delay delay)))
+    (setq xbm-life-delay delay))
+  (xbm-life-call-on-windows 'xbm-life-stats-update))
 
 (defun xbm-life-speed-up (arg)
   "Speed up demo by ARG."
@@ -455,7 +459,8 @@ values like 0.01s."
   (let ((size (max xbm-life-tile-minimum
                    (+ xbm-life-tile-size (* arg xbm-life-tile-step)))))
     (setq xbm-life-tile-size size)
-    (xbm-life-redraw-grid)))
+    (xbm-life-redraw-grid))
+  (xbm-life-stats-update))
 
 (defun xbm-life-larger-tiles (arg)
   "Make tile size larger by ARG."
@@ -489,7 +494,8 @@ values like 0.01s."
                    (+ xbm-life-grid-size (* arg xbm-life-grid-step)))))
     (setq xbm-life-grid (xbm-life-copy-grid xbm-life-grid size))
     (setq xbm-life-grid-size size)
-    (xbm-life-redraw-grid)))
+    (xbm-life-redraw-grid))
+  (xbm-life-stats-update))
 
 (defun xbm-life-larger-grid (arg)
   "Make grid larger by ARG."
@@ -499,7 +505,8 @@ values like 0.01s."
 (defun xbm-life-toggle-toroidal-grid ()
   "Toggle toroidal grid state."
   (interactive)
-  (setq xbm-life-toroidal-grid (not xbm-life-toroidal-grid)))
+  (setq xbm-life-toroidal-grid (not xbm-life-toroidal-grid))
+  (xbm-life-stats-update))
 
 (defun xbm-life-invert-colors ()
   "Invert currently used fore- and background color."
@@ -526,6 +533,49 @@ values like 0.01s."
 (define-key xbm-life-mode-map (kbd "t") 'xbm-life-toggle-toroidal-grid)
 (define-key xbm-life-mode-map (kbd "i") 'xbm-life-invert-colors)
 
+(defcustom xbm-life-display-stats t
+  "When non-nil, display demo stats when starting a demo."
+  :type 'boolean
+  :group 'xbm-life)
+
+(defvar xbm-life-stats-lighter ""
+  "Current demo stats.
+See `xbm-life-stats-lighter-format' for an explanation of the
+displayed stats.")
+(make-variable-buffer-local 'xbm-life-stats-lighter)
+
+(defvar xbm-life-stats-lighter-format " D: %d, G: %g, T: %t, R: %r, S: %s"
+  "Format string for demo stats minor mode.
+Valid format specifiers are:
+
+%d: Current delay as floating point number with one digit of
+ precision.
+
+%g: Current grid size.
+
+%t: Current tile size.
+
+%r: Unicode checkmark or ballot glyph, depending on whether the grid is
+ a torus or not.
+
+%s: Unicode play or pause glyph, depending on whether the demo is
+ playing or paused.")
+
+(define-minor-mode xbm-life-stats-mode
+  "Toggles stats display for `xbm-life'."
+  :lighter xbm-life-stats-lighter)
+
+(defun xbm-life-stats-update ()
+  "Update the current demo stats in the mode line."
+  (setq xbm-life-stats-lighter
+        (format-spec xbm-life-stats-lighter-format
+                     (format-spec-make ?d (format "%.1f" xbm-life-delay)
+                                       ?g xbm-life-grid-size
+                                       ?t xbm-life-tile-size
+                                       ?r (if xbm-life-toroidal-grid "✔" "✘")
+                                       ?s (if xbm-life-playing "▶" "⏸"))))
+  (force-mode-line-update t))
+
 ;;;###autoload
 (defun xbm-life (arg)
   "Launch a XBM demo of Conway's Game of Life.
@@ -538,6 +588,9 @@ name."
                        "*xbm life*")))
     (with-current-buffer (get-buffer-create buffer-name)
       (xbm-life-mode)
+      (when xbm-life-display-stats
+        (xbm-life-stats-mode)
+        (xbm-life-stats-update))
       (xbm-life-redraw-grid))
     (display-buffer buffer-name))
   (xbm-life-play))
@@ -548,8 +601,6 @@ name."
 ;; of the first glyph in the line the image was inserted in, then
 ;; adding the image width and height to compare the click coordinates
 ;; with for figuring out what cell was clicked
-
-;; TODO add modeline indicators for parameters
 
 (provide 'xbm-life)
 
