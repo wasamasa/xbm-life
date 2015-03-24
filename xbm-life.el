@@ -304,13 +304,17 @@ When supplying SIZE, make it of that size instead
   (interactive)
   (setq buffer-read-only nil)
   (erase-buffer)
-  (insert-image
-   (create-image (xbm-life-render-image xbm-life-grid) 'xbm t
-                 :width (* xbm-life-grid-size xbm-life-tile-size)
-                 :height (* xbm-life-grid-size xbm-life-tile-size)
-                 :foreground xbm-life-foreground
-                 :background xbm-life-background))
+  (insert
+   (propertize " "
+               'display
+               (create-image (xbm-life-render-image xbm-life-grid) 'xbm t
+                             :width (* xbm-life-grid-size xbm-life-tile-size)
+                             :height (* xbm-life-grid-size xbm-life-tile-size)
+                             :foreground xbm-life-foreground
+                             :background xbm-life-background)
+               'point-entered (lambda (_ _) (goto-char (point-max)))))
   (insert "\n")
+  (deactivate-mark)
   (setq buffer-read-only t))
 
 (defun xbm-life-windows ()
