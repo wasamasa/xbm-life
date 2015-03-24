@@ -271,8 +271,8 @@ When supplying SIZE, make it of that size instead
                                               nil t))))
   (let* ((grid (cdr (assoc pattern xbm-life-patterns)))
          (size (length grid)))
-    (setq xbm-life-grid (cdr (assoc pattern xbm-life-patterns)))
-    (setq xbm-life-grid-size size))
+    (setq xbm-life-grid (cdr (assoc pattern xbm-life-patterns))
+          xbm-life-grid-size size))
   (xbm-life-redraw-grid))
 
 (defun xbm-life-load-random-pattern ()
@@ -383,13 +383,13 @@ values like 0.01s."
   "Initialize demo."
   (interactive)
   (buffer-disable-undo)
-  (setq xbm-life-foreground xbm-life-default-foreground)
-  (setq xbm-life-background xbm-life-default-background)
-  (setq xbm-life-grid (xbm-life-create-empty-grid xbm-life-default-grid-size))
-  (setq xbm-life-grid-size (length xbm-life-grid))
-  (setq xbm-life-tile-size xbm-life-default-tile-size)
-  (setq xbm-life-toroidal-grid xbm-life-default-toroidal-grid)
-  (setq xbm-life-delay xbm-life-default-delay)
+  (setq xbm-life-foreground xbm-life-default-foreground
+        xbm-life-background xbm-life-default-background
+        xbm-life-grid (xbm-life-create-empty-grid xbm-life-default-grid-size)
+        xbm-life-grid-size (length xbm-life-grid)
+        xbm-life-tile-size xbm-life-default-tile-size
+        xbm-life-toroidal-grid xbm-life-default-toroidal-grid
+        xbm-life-delay xbm-life-default-delay)
   (when xbm-life-timer
     (xbm-life-timer-adjust xbm-life-delay)
     (xbm-life-pause))
@@ -401,9 +401,10 @@ values like 0.01s."
 (defun xbm-life-play ()
   "Run demo."
   (unless xbm-life-playing
-    (setq xbm-life-timer (run-with-timer xbm-life-delay xbm-life-delay
-                                         'xbm-life-advance-generation))
-    (setq xbm-life-playing t)))
+    (setq xbm-life-timer
+          (run-with-timer xbm-life-delay xbm-life-delay
+                          'xbm-life-advance-generation)
+          xbm-life-playing t)))
 
 (defun xbm-life-pause ()
   "Pause demo."
@@ -498,8 +499,8 @@ values like 0.01s."
   (interactive "p")
   (let ((size (max xbm-life-grid-minimum
                    (+ xbm-life-grid-size (* arg xbm-life-grid-step)))))
-    (setq xbm-life-grid (xbm-life-copy-grid xbm-life-grid size))
-    (setq xbm-life-grid-size size)
+    (setq xbm-life-grid (xbm-life-copy-grid xbm-life-grid size)
+          xbm-life-grid-size size)
     (xbm-life-redraw-grid))
   (xbm-life-stats-update))
 
@@ -519,8 +520,8 @@ values like 0.01s."
   (interactive)
   (let ((foreground xbm-life-background)
         (background xbm-life-foreground))
-    (setq xbm-life-foreground foreground)
-    (setq xbm-life-background background)
+    (setq xbm-life-foreground foreground
+          xbm-life-background background)
     (xbm-life-redraw-grid)))
 
 (defun xbm-life-toggle-cell (row col)
