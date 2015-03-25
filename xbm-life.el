@@ -318,13 +318,14 @@ When supplying SIZE, make it of that size instead
   (setq buffer-read-only t))
 
 (defun xbm-life-windows ()
-  "Return a list of windows displaying the demo."
+  "Return a list of windows displaying and playing the demo."
   (let ((all-windows (window-list-1))
         windows)
     (dolist (window all-windows)
-      (when (eq (buffer-local-value 'major-mode (window-buffer window))
-                'xbm-life-mode)
-        (setq windows (cons window windows))))
+      (let ((buffer (window-buffer window)))
+        (when (and (eq (buffer-local-value 'major-mode buffer) 'xbm-life-mode)
+                   (buffer-local-value 'xbm-life-playing buffer))
+          (setq windows (cons window windows)))))
     (nreverse windows)))
 
 (defun xbm-life-call-on-windows (thunk)
@@ -397,19 +398,20 @@ values like 0.01s."
 
 (defvar xbm-life-playing nil
   "Non-nil when the demo is running.")
+(make-variable-buffer-local 'xbm-life-playing)
 
 (defun xbm-life-play ()
   "Run demo."
-  (unless xbm-life-playing
+  (unless xbm-life-timer
     (setq xbm-life-timer
           (run-with-timer xbm-life-delay xbm-life-delay
-                          'xbm-life-advance-generation)
-          xbm-life-playing t)))
+                          'xbm-life-advance-generation)))
+  (unless xbm-life-playing
+    (setq xbm-life-playing t)))
 
 (defun xbm-life-pause ()
   "Pause demo."
   (when xbm-life-playing
-    (cancel-timer xbm-life-timer)
     (setq xbm-life-playing nil)))
 
 (defun xbm-life-play-or-pause ()
