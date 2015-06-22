@@ -614,7 +614,6 @@ Valid format specifiers are:
 Use ARG as prefix argument to create a buffer with a different
 name."
   (interactive "P")
-  (message "%s" arg)
   (let ((buffer-name (if (consp arg)
                          (read-string "Buffer name: " nil nil "*xbm life*")
                        "*xbm life*")))
