@@ -42,8 +42,8 @@ Key bind                  Function
 ========================= ================================
 ``l``                     Load pattern
 ``L``                     Load random pattern
-``r``                     Reset
-``R``                     Randomize
+``g``                     Reset
+``r``                     Randomize
 ``p``, ``SPC``            Toggle play/pause
 ``.``                     Advance by a single generation
 ``+``, ``-``              Speed up/down
