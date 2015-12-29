@@ -31,6 +31,7 @@
 
 ;;; Code:
 
+(require 'drawille)
 (require 'format-spec)
 
 (defgroup xbm-life nil
@@ -278,18 +279,8 @@ In other words, operations wrap around both sides."
 (make-variable-buffer-local 'xbm-life-toroidal-grid)
 
 (defun xbm-life-render-image (grid)
-  "Turn GRID into a XBM image."
-  (let* ((size (* xbm-life-grid-size xbm-life-tile-size))
-         (xbm (make-vector size nil)))
-    (dotimes (row size)
-      (let ((line (make-bool-vector size nil)))
-        (dotimes (col size)
-          ;; iterate over the upscaled xbm, do integer division to
-          ;; obtain the coordinates to look up the original values in
-          (aset line col (= 1 (xbm-life-peek grid (/ row xbm-life-tile-size)
-                                             (/ col xbm-life-tile-size)))))
-        (aset xbm row line)))
-    xbm))
+  "Turn GRID into an 'image'."
+  (drawille-from-matrix grid))
 
 (defun xbm-life-peek (grid row col)
   "Return value for GRID at ROW and COL."
@@ -404,15 +395,7 @@ When supplying SIZE, make it of that size instead
   (interactive)
   (setq buffer-read-only nil)
   (erase-buffer)
-  (insert
-   (propertize " "
-               'display
-               (create-image (xbm-life-render-image xbm-life-grid) 'xbm t
-                             :width (* xbm-life-grid-size xbm-life-tile-size)
-                             :height (* xbm-life-grid-size xbm-life-tile-size)
-                             :foreground xbm-life-foreground
-                             :background xbm-life-background)
-               'point-entered (lambda (_ _) (goto-char (point-max)))))
+  (insert (xbm-life-render-image xbm-life-grid))
   (insert "\n")
   (deactivate-mark)
   (setq buffer-read-only t))
