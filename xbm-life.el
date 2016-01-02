@@ -1,6 +1,6 @@
 ;;; xbm-life.el --- A XBM version of Conway's Game of Life
 
-;; Copyright (C) 2015 Vasilij Schneidermann <v.schneidermann@gmail.com>
+;; Copyright (C) 2015-2016 Vasilij Schneidermann <v.schneidermann@gmail.com>
 
 ;; Author: Vasilij Schneidermann <v.schneidermann@gmail.com>
 ;; URL: https://github.com/wasamasa/xbm-life
