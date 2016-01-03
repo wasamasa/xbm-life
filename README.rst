@@ -1,14 +1,24 @@
 xbm-life
 =========
 
+.. image:: http://melpa.org/packages/xbm-life-badge.svg
+   :target: http://melpa.org/#/xbm-life
+.. image:: http://stable.melpa.org/packages/xbm-life-badge.svg
+   :target: http://stable.melpa.org/#/xbm-life
+.. image:: https://img.shields.io/github/tag/wasamasa/xbm-life.svg
+   :target: https://github.com/wasamasa/xbm-life/tags
+.. image:: http://img.shields.io/:license-gpl3-blue.svg
+  :target: http://www.gnu.org/licenses/gpl-3.0.html
+
+..
+
+    An implementation of `Conway's Game of Life
+    <https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life>`_ using Emacs'
+    support for XBM images.
+    Requires a graphical Emacs instance to run.
+
 .. image:: https://raw.github.com/wasamasa/xbm-life/master/img/screencast.gif
-
-About
------
-
-An implementation of `Conway's Game of Life
-<https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life>`_ using Emacs'
-support for XBM images.  Requires a graphical Emacs instance to run.
+   :align: center
 
 Installation
 ------------
