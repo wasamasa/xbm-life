@@ -412,7 +412,7 @@ When supplying SIZE, make it of that size instead
                              :height (* xbm-life-grid-size xbm-life-tile-size)
                              :foreground xbm-life-foreground
                              :background xbm-life-background)
-               'point-entered (lambda (_ _) (goto-char (point-max)))))
+               'point-entered (lambda (_old _new) (goto-char (point-max)))))
   (insert "\n")
   (deactivate-mark)
   (setq buffer-read-only t))
